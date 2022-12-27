@@ -1,0 +1,28 @@
+
+{
+  "name": "react-native-talking-data",
+  "version": "1.0.0",
+  "description": "react-native library for talkingdata",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf lib",
+    "compile": "tsc -d"
+  },
+  "keywords": [
+    "react-native",
+    "react",
+    "ios",
+    "android",
+    "talkingdata"
+  ],
+  "author": "liuhaiyang",
+  "license": "MIT",
+  "homepage": "https://gitlab.com/liuhy412484577/react-native-talkingdata#readme",
+  "peerDependencies": {
+    "react-native": "^0.70.2"
+  }
+}
