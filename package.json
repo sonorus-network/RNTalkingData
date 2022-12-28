@@ -2,7 +2,7 @@
 {
   "name": "react-native-talking-data",
   "version": "1.0.0",
-  "description": "react-native library for talkingdata",
+  "description": "react-native library for talkingData",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,11 +17,11 @@
     "react",
     "ios",
     "android",
-    "talkingdata"
+    "talkingData"
   ],
-  "author": "liuhaiyang",
+  "author": "eric",
   "license": "MIT",
-  "homepage": "https://gitlab.com/liuhy412484577/react-native-talkingdata#readme",
+  "homepage": "https://github.com/sonorus-eric/RNTalkingData/blob/main/README.md",
   "peerDependencies": {
     "react-native": "^0.70.2"
   }

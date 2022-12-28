@@ -45,7 +45,7 @@
 
 ## Usage
 ```javascript
-import RNTalkingData from 'react-native-talking-data';
+import { trackEvent } from 'react-native-talking-data';
 
 // TODO: What to do with the module?
 RNTalkingData;
