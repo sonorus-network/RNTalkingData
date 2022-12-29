@@ -4,8 +4,11 @@ import android.content.Context;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.ReadableMap;
 import com.tendcloud.tenddata.TalkingDataSDK;
-import java.util.Map;
+import java.util.HashMap;
 
 public class RNTalkingDataModule extends ReactContextBaseJavaModule {
 
@@ -40,9 +43,18 @@ public class RNTalkingDataModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void trackEvent(String eventName, double eventValue, Map parameters) {
+  public void trackEvent(String eventName, double eventValue, ReadableMap parameters) {
     if (eventName != null) {
-        TalkingDataSDK.onEvent(getReactApplicationContext(), eventName, eventValue, parameters);
+        HashMap map = new HashMap();
+        ReadableMapKeySetIterator iterator = parameters.keySetIterator();
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            ReadableType type = parameters.getType(key);
+            if (type == ReadableType.String) {
+                map.put(key, parameters.getString(key));
+            }
+        }
+        TalkingDataSDK.onEvent(getReactApplicationContext(), eventName, eventValue, map);
     }
   }
 }
