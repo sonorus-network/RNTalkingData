@@ -23,6 +23,6 @@
   "license": "MIT",
   "homepage": "https://github.com/sonorus-eric/RNTalkingData/blob/main/README.md",
   "peerDependencies": {
-    "react-native": "^0.70.2"
+    "react-native": "~0.71.0"
   }
 }
