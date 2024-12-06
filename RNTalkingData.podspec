@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.vendored_libraries = "ios/libTalkingDataSDK.a"
-  s.frameworks = 'AdServices', 'iAd', 'StoreKit', 'AppTrackingTransparency', 'AdSupport', 'CoreTelephony', 'Security', 'SystemConfiguration'
+  s.frameworks = 'StoreKit', 'AppTrackingTransparency', 'CoreTelephony', 'Security', 'SystemConfiguration'
   # 这里依赖的系统库要去掉前缀 lib: libc++ libz
   s.libraries = 'c++', 'z'
 

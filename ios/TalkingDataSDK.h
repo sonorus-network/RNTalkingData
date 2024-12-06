@@ -21,6 +21,12 @@ typedef NS_ENUM(NSUInteger, TalkingDataVendorIdType) {
     TalkingDataVendorIdTypeGX           = 2,    // 广协
 };
 
+typedef NS_ENUM(NSInteger, TalkingDataSharingFilter) {
+    TalkingDataSharingFilterShare       = 0,    // 可共享
+    TalkingDataSharingFilterOnlyInstall = 1,    // 仅共享Install事件
+    TalkingDataSharingFilterUnshare     = 2,    // 不可共享
+};
+
 typedef NS_ENUM(NSUInteger, TalkingDataProfileType) {
     TalkingDataProfileTypeAnonymous     = 0,    // 匿名账户
     TalkingDataProfileTypeRegistered    = 1,    // 显性注册账户
@@ -103,7 +109,7 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
 + (NSString *)getDeviceId;
 
 /**
- *  设置不显示日志。如发布时不需显示日志，应当最先调用该方法。
+ *  设置不显示日志。如发布时不需显示日志，应当最先调用该接口。
  */
 + (void)setVerboseLogDisable;
 
@@ -112,6 +118,8 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
  */
 + (void)setConfigurationDisable:(TalkingDataDisable)options;
 
+
+
 /**
  *  开启后台使用时长统计，需在SDK初始化之前调用。
  */
@@ -119,18 +127,29 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
 
 #if TARGET_OS_IOS
 /**
- *  用于精准的追踪以Safari作为资源载体的广告来源，如果需要使用应当在init方法之前调用。
+ *  用于精准的追踪以Safari作为资源载体的广告来源，如果需要使用应当在init接口之前调用。
  */
-+ (void)enableSFSafariViewControllerTracking API_DEPRECATED("此方法会影响到用户交互，使用前请确保和产品、业务沟通清楚!", ios(1, 1));
++ (void)enableSFSafariViewControllerTracking API_DEPRECATED("此接口会影响到用户交互，使用前请确保和产品、业务沟通清楚!", ios(1, 1));
 #endif
 
 /**
- *  TalkingData SDK初始化方法。请在application:didFinishLaunchingWithOptions:方法里调用
+ *  此接口已废弃，请调用'initSDK'和'startA'接口，详细说明请见官网集成文档。
+ */
++ (void)init:(NSString *)appId channelId:(NSString *)channelId custom:(NSString *)custom NS_UNAVAILABLE;
+
+/**
+ *  SDK初始化接口，仅会执行SDK初始化，不会进行任何信息采集。
+ *  请在application:didFinishLaunchingWithOptions:中调用
  *  @param  appId           应用的唯一标识，统计后台注册得到
  *  @param  channelId       渠道名（可选）。如“AppStore”
  *  @param  custom          自定义参数（可选）。
  */
-+ (void)init:(NSString *)appId channelId:(NSString *)channelId custom:(NSString *)custom;
++ (void)initSDK:(NSString *)appId channelId:(NSString *)channelId custom:(NSString *)custom;
+
+/**
+ *  SDK启动分析，基础数据准备。
+ */
++ (void)startA;
 
 /**
  *  设置第三方的ID
@@ -145,6 +164,12 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
  *  @param  longitude       经度
  */
 + (void)setLatitude:(double)latitude longitude:(double)longitude;
+
+/**
+ *  设置自定义数据是否可共享
+ *  @param flag             是否可共享
+ */
++ (void)setCustomDataSwitch:(TalkingDataSharingFilter)flag;
 
 #if TARGET_OS_IOS
 /**
@@ -164,18 +189,33 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
 
 /**
  *  开始跟踪某一页面，记录页面打开时间
- *  建议在viewWillAppear或者viewDidAppear方法里调用
+ *  建议在viewWillAppear或者viewDidAppear中调用
  *  @param  pageName        页面名称
  */
 + (void)onPageBegin:(NSString *)pageName;
 
 /**
  *  结束某一页面的跟踪，记录页面的关闭时间
- *  此方法与onPageBegin方法结对使用
- *  建议在viewWillDisappear或者viewDidDisappear方法里调用
- *  @param  pageName        页面名称，请跟onPageBegin方法的页面名称保持一致
+ *  此接口与onPageBegin接口结对使用
+ *  建议在viewWillDisappear或者viewDidDisappear中调用
+ *  @param  pageName        页面名称，请跟onPageBegin接口的页面名称保持一致
  */
 + (void)onPageEnd:(NSString *)pageName;
+
+/**
+ *  获取短链
+ *  @param  params          生成短链所参数
+ *  @param  callback        返回结果
+ */
++ (void)getShortUrl:(NSDictionary *)params callback:(void (^)(NSString *shortUrl))callback;
+
+
+/**
+ *  处理UniversalLink
+ *  @param  userActivity    获取到的NSUserActivity对象
+ *  @return deeplink        深度链接
+ */
++ (NSString *)handleUniversalLink:(NSUserActivity *)userActivity;
 
 /**
  *  唤醒事件
@@ -188,14 +228,18 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
  *  @param  profileId       账户ID
  *  @param  profile         账户属性
  *  @param  invitationCode  邀请码
+ *  @param  eventValue      用户自定义事件参数
  */
++ (void)onRegister:(NSString *)profileId profile:(TalkingDataProfile *)profile invitationCode:(NSString *)invitationCode eventValue:(NSDictionary *)eventValue;
 + (void)onRegister:(NSString *)profileId profile:(TalkingDataProfile *)profile invitationCode:(NSString *)invitationCode;
 
 /**
  *  登录
  *  @param  profileId       账户ID
  *  @param  profile         账户属性
+ *  @param  eventValue      用户自定义事件参数
  */
++ (void)onLogin:(NSString *)profileId profile:(TalkingDataProfile *)profile eventValue:(NSDictionary *)eventValue;
 + (void)onLogin:(NSString *)profileId profile:(TalkingDataProfile *)profile;
 
 /**
@@ -216,14 +260,18 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
  *  收藏
  *  @param  category        收藏类别
  *  @param  content         收藏内容
+ *  @param  eventValue      用户自定义事件参数
  */
++ (void)onFavorite:(NSString *)category content:(NSString *)content eventValue:(NSDictionary *)eventValue;
 + (void)onFavorite:(NSString *)category content:(NSString *)content;
 
 /**
  *  分享
  *  @param  profileId       账户ID
  *  @param  content         分享内容
+ *  @param  eventValue      用户自定义事件参数
  */
++ (void)onShare:(NSString *)profileId content:(NSString *)content eventValue:(NSDictionary *)eventValue;
 + (void)onShare:(NSString *)profileId content:(NSString *)content;
 
 /**
@@ -259,10 +307,12 @@ typedef NS_ENUM(NSUInteger, TalkingDataGender) {
 /**
  *  自定义事件
  *  @param  eventId         事件名称
- *  @param  eventValue      事件数值
  *  @param  parameters      事件参数 (key只支持NSString, value支持NSString和NSNumber)
+ *  @param  eventValue      用户自定义事件参数
  */
-+ (void)onEvent:(NSString *)eventId value:(double)eventValue parameters:(NSDictionary *)parameters;
++ (void)onEvent:(NSString *)eventId parameters:(NSDictionary *)parameters eventValue:(NSDictionary *)eventValue;
++ (void)onEvent:(NSString *)eventId parameters:(NSDictionary *)parameters;
++ (void)onEvent:(NSString *)eventId value:(double)eventValue parameters:(NSDictionary *)parameters API_DEPRECATED_WITH_REPLACEMENT("onEvent:parameters", ios(1,1));
 
 /**
  *  添加自定义事件全局参数

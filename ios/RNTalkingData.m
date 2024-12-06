@@ -17,14 +17,16 @@ RCT_EXPORT_MODULE()
             [TalkingDataSDK setExceptionReportEnabled:YES];
             [TalkingDataSDK setSignalReportEnabled:YES];
         }
-        [TalkingDataSDK init: appId channelId: channelID custom: customParam];
+        [TalkingDataSDK backgroundSessionEnabled];
+        [TalkingDataSDK initSDK:appId channelId:channelID custom:customParam];
+        [TalkingDataSDK startA];
     });
 }
 
 RCT_EXPORT_METHOD(trackEvent:(NSString *)event_name value:(double)event_value parameters:(NSDictionary *)parameters)
 {
     if (event_name != nil) {
-        [TalkingDataSDK onEvent:event_name value:event_value parameters:parameters];
+        [TalkingDataSDK onEvent:event_name parameters:parameters];
     }
 }
 
